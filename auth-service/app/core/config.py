@@ -15,6 +15,12 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
     
+    MINIO_ENDPOINT: str = "minio"
+    MINIO_ACCESS_KEY: str = "minioadmin"
+    MINIO_SECRET_KEY: str = "minioadmin"
+    MINIO_BUCKET_NAME: str = "diagnosix"
+    MINIO_SECURE: bool = False
+    
     BACKEND_CORS_ORIGINS: list[str] = ["*"]
     
     class Config:

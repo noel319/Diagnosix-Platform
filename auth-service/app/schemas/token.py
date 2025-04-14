@@ -1,8 +1,4 @@
-from typing import Optional
-
 from pydantic import BaseModel
-
-from app.models.user import UserRole
 
 
 class Token(BaseModel):
@@ -11,11 +7,5 @@ class Token(BaseModel):
 
 
 class TokenPayload(BaseModel):
-    sub: Optional[str] = None
-    role: Optional[UserRole] = None
-    exp: Optional[int] = None
-
-
-class TokenData(BaseModel):
-    username: str
-    role: UserRole
+    sub: int | None = None
+    role: str | None = None

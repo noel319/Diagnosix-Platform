@@ -7,7 +7,7 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1';
 const api = axios.create({
   baseURL: API_URL,
   headers: {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/x-www-form-urlencoded',
   },
 });
 
@@ -23,10 +23,16 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Define the shape of FastAPI error response
+interface FastAPIError {
+  detail?: string;
+  [key: string]: any;
+}
+
 // Response interceptor to handle errors
 api.interceptors.response.use(
   (response) => response,
-  (error: AxiosError) => {
+  (error: AxiosError<FastAPIError>) => {
     const apiError: ApiError = {
       status: error.response?.status || 500,
       message: 'An error occurred',
@@ -39,13 +45,20 @@ api.interceptors.response.use(
 // Auth endpoints
 export const authApi = {
   register: async (data: RegisterFormData): Promise<User> => {
-    const response = await api.post('/auth/register', data);
+    // Match the structure expected by the FastAPI backend and use the correct endpoint
+    const response = await api.post('/register', {
+      email: data.email,
+      username: data.username,
+      password: data.password,
+      full_name: data.full_name || undefined,
+      role: data.role
+    });
     return response.data;
   },
 
   login: async (data: LoginFormData): Promise<AuthToken> => {
     // For login, we need to use form data format as per FastAPI OAuth2PasswordRequestForm
-    const formData = new FormData();
+    const formData = new URLSearchParams();
     formData.append('username', data.username);
     formData.append('password', data.password);
 
@@ -55,13 +68,7 @@ export const authApi = {
       },
     };
 
-    const response = await api.post('/auth/login', 
-      new URLSearchParams({
-        username: data.username,
-        password: data.password,
-      }),
-      config
-    );
+    const response = await api.post('/login', formData, config);
     
     // Store token in localStorage
     localStorage.setItem('token', response.data.access_token);
@@ -74,7 +81,7 @@ export const authApi = {
   },
 
   getCurrentUser: async (): Promise<User> => {
-    const response = await api.get('/auth/me');
+    const response = await api.get('/me');
     return response.data;
   },
 

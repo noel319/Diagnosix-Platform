@@ -130,3 +130,95 @@ const Dashboard: React.FC = () => {
         );
     }
   };
+
+  return (
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Grid container spacing={3}>
+        {/* Welcome Card */}
+        <Grid item xs={12}>
+          <Paper
+            sx={{
+              p: 3,
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              {getRoleIcon()}
+              <Typography variant="h4" component="h1" sx={{ ml: 2 }}>
+                Welcome, {user?.full_name || user?.username}!
+              </Typography>
+            </Box>
+            <Divider sx={{ my: 2 }} />
+            {getRoleContent()}
+          </Paper>
+        </Grid>
+
+        {/* Statistics Cards */}
+        <Grid item xs={12} md={4}>
+          <Card>
+            <CardContent>
+              <Typography color="textSecondary" gutterBottom>
+                Account
+              </Typography>
+              <Typography variant="h5" component="div">
+                {user?.username}
+              </Typography>
+              <Typography color="textSecondary">
+                <Chip 
+                  label={user?.role} 
+                  size="small" 
+                  color="primary" 
+                  sx={{ textTransform: 'capitalize', mt: 1 }}
+                />
+              </Typography>
+              <Typography variant="body2" sx={{ mt: 1.5 }}>
+                Joined: {new Date(user?.created_at || '').toLocaleDateString()}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} md={4}>
+          <Card>
+            <CardContent>
+              <Typography color="textSecondary" gutterBottom>
+                Status
+              </Typography>
+              <Typography variant="h5" component="div">
+                Active
+              </Typography>
+              <Typography color="textSecondary">
+                Account in good standing
+              </Typography>
+              <Typography variant="body2" sx={{ mt: 1.5 }}>
+                Last login: {new Date().toLocaleDateString()}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} md={4}>
+          <Card>
+            <CardContent>
+              <Typography color="textSecondary" gutterBottom>
+                Activity
+              </Typography>
+              <Typography variant="h5" component="div">
+                Recent
+              </Typography>
+              <Typography color="textSecondary">
+                No pending notifications
+              </Typography>
+              <Typography variant="body2" sx={{ mt: 1.5 }}>
+                Last updated: {new Date().toLocaleTimeString()}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+    </Container>
+  );
+}
+
+export default Dashboard;

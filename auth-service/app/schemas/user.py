@@ -1,48 +1,26 @@
-from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, Field, field_validator
-
-from app.models.user import UserRole
+from pydantic import BaseModel, EmailStr
 
 
 class UserBase(BaseModel):
-    email: Optional[EmailStr] = None
-    username: Optional[str] = None
+    email: EmailStr
     full_name: Optional[str] = None
-    is_active: Optional[bool] = True
-    role: Optional[UserRole] = UserRole.PATIENT
+    role: Optional[str] = None
 
 
 class UserCreate(UserBase):
-    email: EmailStr
-    username: str
-    password: str = Field(..., min_length=8)
-    role: UserRole = UserRole.PATIENT
-
-    @field_validator('username')
-    def username_alphanumeric(cls, v):
-        if not v.isalnum():
-            raise ValueError('Username must be alphanumeric')
-        return v
+    password: str
 
 
-class UserUpdate(UserBase):
-    password: Optional[str] = Field(None, min_length=8)
-
-
-class UserInDBBase(UserBase):
+class UserInDB(UserBase):
     id: int
-    created_at: datetime
-    updated_at: Optional[datetime] = None
+    is_active: bool
 
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
-class User(UserInDBBase):
-    pass
-
-
-class UserInDB(UserInDBBase):
-    hashed_password: str
+class UserUpdate(BaseModel):
+    full_name: Optional[str] = None
+    password: Optional[str] = None

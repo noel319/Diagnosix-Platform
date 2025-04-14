@@ -8,7 +8,8 @@ import {
   Typography,
   Alert,
   Paper,
-  CircularProgress
+  CircularProgress,
+  Link
 } from '@mui/material';
 import { LoginFormData, ApiError } from '../types';
 import { useAuth } from '../contexts/AuthContext';
@@ -36,8 +37,8 @@ const LoginForm: React.FC = () => {
 
   return (
     <Paper elevation={3} sx={{ p: 4, maxWidth: 500, mx: 'auto', mt: 8 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Log In
+      <Typography variant="h4" component="h1" gutterBottom align="center">
+        Log In to Diagnosix
       </Typography>
       
       {apiError && (
@@ -87,18 +88,19 @@ const LoginForm: React.FC = () => {
           sx={{ mt: 3, mb: 2 }}
           disabled={isSubmitting}
         >
-          {isSubmitting ? <CircularProgress size={24} /> : 'Log In'}
+          {isSubmitting ? <CircularProgress size={24} /> : 'Sign In'}
         </Button>
         
         <Box sx={{ textAlign: 'center' }}>
           <Typography variant="body2">
             Don't have an account?{' '}
-            <Button 
+            <Link 
+              component="button"
+              variant="body2"
               onClick={() => navigate('/register')}
-              sx={{ textTransform: 'none' }}
             >
-              Register
-            </Button>
+              Create an account
+            </Link>
           </Typography>
         </Box>
       </Box>

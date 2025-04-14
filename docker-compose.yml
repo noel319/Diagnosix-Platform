@@ -1,5 +1,7 @@
+version: '3.8'
+
 services:
- 
+  # Backend services
   auth-api:
     build: ./auth-service
     container_name: diagnosix-auth-service
@@ -31,7 +33,7 @@ services:
       - "5432:5432"
     restart: always
 
- 
+  # Frontend service
   frontend:
     build:
       context: ./frontend

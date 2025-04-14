@@ -1,0 +1,52 @@
+services:
+ 
+  auth-api:
+    build: ./auth-service
+    container_name: diagnosix-auth-service
+    command: >
+      bash -c "alembic upgrade head &&
+               uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    volumes:
+      - ./auth-service:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - ./auth-service/.env
+    restart: always
+
+  db:
+    image: postgres:14
+    container_name: diagnosix-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./auth-service/.env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-auth_service}
+    ports:
+      - "5432:5432"
+    restart: always
+
+ 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: diagnosix-frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - auth-api
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000/api/v1
+    restart: always
+
+volumes:
+  postgres_data:
